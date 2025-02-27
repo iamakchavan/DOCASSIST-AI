@@ -303,11 +303,9 @@ Icon
 
 # Project specific
 uploads/
-*.pdf
-models/*.pkl
-*.h5
-*.model
-*.joblib
+
+
+
 node_modules/
 .env.local
 .env.development.local

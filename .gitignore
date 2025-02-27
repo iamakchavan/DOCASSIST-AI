@@ -140,8 +140,6 @@ flask_session/
 **/__pycache__/
 **/migrations/
 
-
-
 # Logs and databases
 *.log
 *.sqlite
@@ -304,8 +302,6 @@ Icon
 # Project specific
 uploads/
 
-
-
 node_modules/
 .env.local
 .env.development.local
@@ -329,4 +325,17 @@ pids
 .npm
 
 # Optional eslint cache
-.eslintcache 
+.eslintcache
+
+# Keep all model files and dependencies
+!models/
+!models/*
+!*.joblib
+!*.pkl
+!*.h5
+!*.model
+!requirements.txt
+!package.json
+!uploads/
+!static/
+!templates/ 

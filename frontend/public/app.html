@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DocAssist AI - Medical Report Analysis</title>
+    <title>DOCASSIST-AI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -17,26 +17,20 @@
             --card-foreground: #09090b;
             --popover: #ffffff;
             --popover-foreground: #09090b;
-            --primary: #16a34a;
-            --primary-foreground: #ffffff;
-            --primary-dark: #15803d;
+            --primary: #18181b;
+            --primary-foreground: #fafafa;
             --secondary: #f4f4f5;
-            --secondary-foreground: #09090b;
+            --secondary-foreground: #18181b;
             --muted: #f4f4f5;
             --muted-foreground: #71717a;
             --accent: #f4f4f5;
-            --accent-foreground: #09090b;
+            --accent-foreground: #18181b;
             --destructive: #ef4444;
-            --destructive-foreground: #f8fafc;
+            --destructive-foreground: #fafafa;
             --border: #e4e4e7;
             --input: #e4e4e7;
-            --ring: #16a34a;
+            --ring: #18181b;
             --radius: 0.5rem;
-            --background-light: #f8fafc;
-            
-            /* Footer styles */
-            --footer-bg: #f8fafc;
-            --footer-text: #64748b;
         }
 
         [data-theme="dark"] {
@@ -46,9 +40,8 @@
             --card-foreground: #fafafa;
             --popover: #18181b;
             --popover-foreground: #fafafa;
-            --primary: #22c55e;
-            --primary-foreground: #ffffff;
-            --primary-dark: #16a34a;
+            --primary: #fafafa;
+            --primary-foreground: #18181b;
             --secondary: #27272a;
             --secondary-foreground: #fafafa;
             --muted: #27272a;
@@ -59,8 +52,7 @@
             --destructive-foreground: #fafafa;
             --border: #27272a;
             --input: #27272a;
-            --ring: #22c55e;
-            --background-light: #18181b;
+            --ring: #d4d4d8;
         }
 
         * {
@@ -91,12 +83,6 @@
             font-size: 2.5rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .header h1 .logo {
-            margin-right: auto;
         }
 
         .header p {
@@ -390,7 +376,7 @@
         }
 
         .status-normal {
-            color: var(--primary);
+            color: #16a34a;
         }
 
         .status-warning {
@@ -751,7 +737,7 @@
 
         .range-fill {
             height: 100%;
-            background: var(--primary);
+            background: #4ade80;
             border-radius: 3px;
             transition: width 0.5s ease;
         }
@@ -863,7 +849,7 @@
 
         /* Dark mode adjustments */
         [data-theme="dark"] .range-fill {
-            background: var(--primary);
+            background: #22c55e;
         }
 
         [data-theme="dark"] .circle {
@@ -915,64 +901,73 @@
         }
 
         .input-method-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
+            position: relative;
             padding: 2rem;
-            text-align: center;
+            background: var(--background);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
             cursor: pointer;
             transition: all 0.3s ease;
-            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
             overflow: hidden;
         }
 
-        .input-method-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                120deg,
-                transparent,
-                rgba(255, 255, 255, 0.3),
-                transparent
-            );
-            transition: 0.5s ease;
-        }
-
-        .input-method-card:hover::before {
-            left: 100%;
-        }
-
         .input-method-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-method-card.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
         }
 
         .input-method-card .icon {
             width: 48px;
             height: 48px;
-            margin-bottom: 1rem;
             color: var(--primary);
+            transition: transform 0.3s ease;
+        }
+
+        .input-method-card:hover .icon {
+            transform: scale(1.1);
         }
 
         .input-method-card h4 {
+            margin: 0;
             font-size: 1.25rem;
             font-weight: 600;
-            margin-bottom: 0.5rem;
             color: var(--foreground);
         }
 
         .input-method-card p {
-            color: var(--muted-foreground);
-            font-size: 0.875rem;
             margin: 0;
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            text-align: center;
         }
 
-        .input-method-card .active-indicator {
+        .input-method-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(var(--primary-rgb), 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .input-method-card:hover::after {
+            transform: translateX(100%);
+        }
+
+        .active-indicator {
             position: absolute;
             top: 1rem;
             right: 1rem;
@@ -989,120 +984,199 @@
             transform: scale(1);
         }
 
-        [data-theme="dark"] .input-method-card::before {
-            background: linear-gradient(
-                120deg,
-                transparent,
-                rgba(255, 255, 255, 0.1),
-                transparent
-            );
-        }
-
-        .input-methods {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-
-        /* Landing Page Styles */
         .landing-page {
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background: linear-gradient(135deg, var(--background), var(--card));
+            overflow-x: hidden;
         }
 
         .hero-section {
-            min-height: 90vh;
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            text-align: center;
-            padding: 4rem 2rem;
-            background: linear-gradient(
-                135deg,
-                var(--background) 0%,
-                var(--background-light) 100%
-            );
+            justify-content: center;
             position: relative;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, var(--background), var(--card));
             overflow: hidden;
         }
 
+        /* Add decorative background elements */
         .hero-section::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(
-                circle at center,
-                var(--primary) 0%,
-                transparent 70%
-            );
-            opacity: 0.05;
-            z-index: 1;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(var(--primary-rgb), 0.15) 0%, transparent 25%),
+                radial-gradient(circle at 80% 80%, rgba(var(--primary-rgb), 0.1) 0%, transparent 25%);
+            opacity: 0.8;
+            z-index: 0;
         }
 
         .hero-content {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
+            text-align: center;
             position: relative;
             z-index: 2;
+            padding: 2rem;
+            border-radius: var(--radius);
+            background: rgba(var(--card-rgb), 0.8);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(var(--primary-rgb), 0.1);
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: rgba(var(--primary-rgb), 0.1);
+            color: var(--primary);
+            border-radius: 2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(var(--primary-rgb), 0.2);
+            backdrop-filter: blur(4px);
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .hero-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
         }
 
         .hero-title {
-            font-family: 'Instrument Serif', serif;
-            font-size: 4.5rem;
-            font-weight: 700;
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 800;
             margin-bottom: 1.5rem;
             line-height: 1.1;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            letter-spacing: -0.02em;
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -0.02em;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .hero-subtitle {
-            font-family: 'Geist', sans-serif;
-            font-size: 1.25rem;
-            color: var(--foreground);
-            margin-bottom: 2.5rem;
-            max-width: 600px;
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            color: var(--muted-foreground);
+            margin-bottom: 3rem;
+            max-width: 800px;
             margin-left: auto;
             margin-right: auto;
+            line-height: 1.6;
             opacity: 0.9;
-            font-weight: 400;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
         }
 
         .get-started-btn {
-            font-family: 'Geist', sans-serif;
-            font-size: 1.125rem;
-            font-weight: 500;
             padding: 1rem 2.5rem;
-            background: var(--primary);
-            color: var(--primary-foreground);
+            font-size: 1.25rem;
+            font-weight: 600;
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            color: white;
             border: none;
             border-radius: var(--radius);
             cursor: pointer;
             transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .get-started-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .get-started-btn:hover::before {
+            left: 100%;
         }
 
         .get-started-btn:hover {
             transform: translateY(-2px);
-            background: var(--primary-dark);
-            box-shadow: 0 12px 24px -8px rgba(22, 163, 74, 0.25);
+            box-shadow: 0 6px 20px rgba(var(--primary-rgb), 0.4);
+        }
+
+        .learn-more-btn {
+            padding: 1rem 2.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.1);
+        }
+
+        .learn-more-btn:hover {
+            background: rgba(var(--primary-rgb), 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(var(--primary-rgb), 0.2);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-content {
+                padding: 1.5rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .get-started-btn,
+            .learn-more-btn {
+                width: 100%;
+            }
         }
 
         .features-section {
             padding: 6rem 2rem;
             background: var(--background);
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--foreground);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--muted-foreground);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            line-height: 1.6;
         }
 
         .features-grid {
@@ -1114,16 +1188,19 @@
         }
 
         .feature-card {
-            padding: 2rem;
+            padding: 2.5rem;
             background: var(--card);
             border-radius: var(--radius);
             border: 1px solid var(--border);
             transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         .feature-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
         }
 
         .feature-icon {
@@ -1134,359 +1211,77 @@
         }
 
         .feature-title {
-            font-family: 'Instrument Serif', serif;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
             margin-bottom: 1rem;
             color: var(--foreground);
         }
 
         .feature-description {
-            font-family: 'Geist', sans-serif;
             color: var(--muted-foreground);
             line-height: 1.6;
+            margin: 0;
         }
 
-        .how-it-works {
+        .how-it-works-section {
             padding: 6rem 2rem;
-            background: var(--background-light);
+            background: var(--card);
+            position: relative;
+            overflow: hidden;
         }
 
-        .section-title {
-            font-family: 'Instrument Serif', serif;
-            font-size: 2.5rem;
-            text-align: center;
-            margin-bottom: 3rem;
-            color: var(--foreground);
-        }
-
-        .steps-grid {
+        .steps-container {
+            max-width: 1000px;
+            margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
+            gap: 3rem;
+            position: relative;
+            z-index: 1;
         }
 
         .step-card {
             text-align: center;
             padding: 2rem;
+            background: var(--background);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
         }
 
         .step-number {
-            font-family: 'Instrument Serif', serif;
-            font-size: 3rem;
-            font-style: italic;
-            color: var(--primary);
-            margin-bottom: 1rem;
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-weight: 600;
         }
 
         .step-title {
-            font-family: 'Geist', sans-serif;
             font-size: 1.25rem;
+            font-weight: 600;
             margin-bottom: 1rem;
             color: var(--foreground);
         }
 
         .step-description {
-            font-family: 'Geist', sans-serif;
             color: var(--muted-foreground);
             line-height: 1.6;
+            margin: 0;
         }
 
-        /* App Section */
-        .app-section {
+        .main-interface {
             display: none;
-            min-height: 100vh;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 3rem;
-            }
-
-            .hero-subtitle {
-                font-size: 1.125rem;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-        }
-
-        /* Landing Page Animation Styles */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes scaleIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .animate {
-            opacity: 0;
-        }
-
-        .animate.fade-in-up {
-            animation: fadeInUp 0.6s ease-out forwards;
-        }
-
-        .animate.scale-in {
-            animation: scaleIn 0.6s ease-out forwards;
-        }
-
-        .animate.slide-in-left {
-            animation: slideInLeft 0.6s ease-out forwards;
-        }
-
-        .animate.slide-in-right {
-            animation: slideInRight 0.6s ease-out forwards;
-        }
-
-        .animate.delay-1 {
-            animation-delay: 0.2s;
-        }
-
-        .animate.delay-2 {
-            animation-delay: 0.4s;
-        }
-
-        .animate.delay-3 {
-            animation-delay: 0.6s;
-        }
-
-        /* Update hero section for initial animation */
-        .hero-content > * {
-            opacity: 0;
-        }
-
-        .hero-content .hero-title {
-            animation: fadeInUp 0.8s ease-out forwards;
-        }
-
-        .hero-content .hero-subtitle {
-            animation: fadeInUp 0.8s ease-out 0.3s forwards;
-        }
-
-        .hero-content .get-started-btn {
-            animation: fadeInUp 0.8s ease-out 0.6s forwards;
-        }
-
-        /* Add animation classes to sections */
-        .features-section {
-            opacity: 0;
-        }
-
-        .feature-card {
-            opacity: 0;
-        }
-
-        .how-it-works {
-            opacity: 0;
-        }
-
-        .step-card {
-            opacity: 0;
-        }
-
-        /* Footer styles */
-        .footer {
-            background: var(--background);
-            border-top: 1px solid var(--border);
-            padding: 2rem;
-            margin-top: auto;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        .footer a {
-            color: var(--foreground);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: color 0.2s;
-        }
-
-        .footer a:hover {
-            color: var(--primary);
-        }
-
-        .footer svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .logo {
-            text-decoration: none;
-            color: inherit;
-            transition: color 0.2s ease;
-            cursor: pointer;
-        }
-
-        .logo:hover {
-            color: var(--primary);
-        }
-
-        .hero-title .logo {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-decoration: none;
-        }
-
-        .header .logo {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        /* Add these styles for recommendations formatting */
-        .recommendations {
-            padding: 2rem;
-            background: var(--card);
-            border-radius: var(--radius);
-            margin: 2rem 0;
-            border: 1px solid var(--border);
-        }
-
-        .recommendations h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--foreground);
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .disease-section {
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            background: var(--background);
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-        }
-
-        .disease-section:last-child {
-            margin-bottom: 0;
-        }
-
-        .disease-section h4 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 1.5rem;
-            letter-spacing: -0.025em;
-        }
-
-        .treatment-subsection {
-            margin-bottom: 1.5rem;
-            padding: 1.5rem;
-            background: var(--muted);
-            border-radius: calc(var(--radius) - 2px);
-        }
-
-        .treatment-subsection:last-child {
-            margin-bottom: 0;
-        }
-
-        .treatment-subsection h5 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--foreground);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .treatment-subsection h5::before {
-            content: '';
-            display: block;
-            width: 4px;
-            height: 1rem;
-            background: var(--primary);
-            border-radius: 2px;
-        }
-
-        .treatment-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .treatment-list ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .treatment-list li {
-            position: relative;
-            padding-left: 1.5rem;
-            margin-bottom: 0.75rem;
-            line-height: 1.6;
-            color: var(--foreground);
-        }
-
-        .treatment-list li:last-child {
-            margin-bottom: 0;
-        }
-
-        .treatment-list li::before {
-            content: '•';
-            position: absolute;
-            left: 0.5rem;
-            color: var(--primary);
-            font-weight: bold;
-        }
-
-        /* Dark theme adjustments */
-        [data-theme="dark"] .treatment-subsection {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        [data-theme="dark"] .disease-section {
-            background: rgba(255, 255, 255, 0.02);
-            border-color: rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
@@ -1509,89 +1304,91 @@
         <span class="theme-text">Toggle theme</span>
     </button>
     
-    <div class="landing-page" id="landingPage">
+    <div id="landingPage" class="landing-page">
         <section class="hero-section">
             <div class="hero-content">
-                <h1 class="hero-title"><a href="#" class="logo" onclick="showLandingPage()">DocAssist AI</a></h1>
-                <p class="hero-subtitle">Medical Report Analysis System</p>
-                <button class="get-started-btn" onclick="showApp()">
-                    Get Started
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
-                    </svg>
-                </button>
-        </div>
+                <span class="hero-badge">AI-Powered Medical Analysis</span>
+                <h1 class="hero-title">DocAssist AI</h1>
+                <p class="hero-subtitle">
+                    Transform your medical reports into actionable insights with our advanced AI technology. Get instant analysis of your blood work data and receive personalized health recommendations in seconds.
+                </p>
+                <div class="hero-buttons">
+                    <button class="get-started-btn" onclick="startApp()">
+                        Get Started
+                    </button>
+                    <button class="learn-more-btn" onclick="scrollToFeatures()">
+                        Learn More
+                    </button>
+                </div>
+            </div>
         </section>
 
-        <section class="features-section">
-            <h2 class="section-title">Why Choose DocAssist AI</h2>
+        <section class="features-section" id="features">
+            <h2 class="section-title">Why Choose DocAssist AI?</h2>
+            <p class="section-subtitle">
+                Experience the future of medical report analysis with our cutting-edge AI technology
+            </p>
             <div class="features-grid">
                 <div class="feature-card">
                     <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
                     </svg>
                     <h3 class="feature-title">Instant Analysis</h3>
-                    <p class="feature-description">Get immediate insights from your blood test results with our advanced AI analysis system.</p>
-    </div>
-                <div class="feature-card">
-                    <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <polyline points="14 2 14 8 20 8"/>
-                        <line x1="16" y1="13" x2="8" y2="13"/>
-                        <line x1="16" y1="17" x2="8" y2="17"/>
-                        <polyline points="10 9 9 9 8 9"/>
-                    </svg>
-                    <h3 class="feature-title">Comprehensive Reports</h3>
-                    <p class="feature-description">Detailed analysis of all blood parameters with clear explanations and recommendations.</p>
+                    <p class="feature-description">Get immediate insights from your blood work data. Our AI analyzes multiple parameters simultaneously for comprehensive results.</p>
                 </div>
+
                 <div class="feature-card">
                     <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
                         <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
                         <line x1="12" y1="22.08" x2="12" y2="12"/>
                     </svg>
-                    <h3 class="feature-title">Easy to Use</h3>
-                    <p class="feature-description">Simple interface for both manual input and PDF uploads of your blood test reports.</p>
+                    <h3 class="feature-title">Smart Insights</h3>
+                    <p class="feature-description">Receive personalized health recommendations and detailed analysis of your blood parameters with advanced AI interpretation.</p>
+                </div>
+
+                <div class="feature-card">
+                    <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    <h3 class="feature-title">Secure & Private</h3>
+                    <p class="feature-description">Your health data is processed securely and never stored without your consent. We prioritize your privacy and data protection.</p>
                 </div>
             </div>
         </section>
 
-        <section class="how-it-works">
+        <section class="how-it-works-section">
             <h2 class="section-title">How It Works</h2>
-            <div class="steps-grid">
+            <p class="section-subtitle">
+                Three simple steps to get your comprehensive health analysis
+            </p>
+            <div class="steps-container">
                 <div class="step-card">
-                    <div class="step-number">01</div>
+                    <div class="step-number">1</div>
                     <h3 class="step-title">Input Your Data</h3>
-                    <p class="step-description">Enter your blood test values manually or upload your PDF report.</p>
+                    <p class="step-description">Simply enter your blood work values manually or upload your PDF report for quick analysis.</p>
                 </div>
+
                 <div class="step-card">
-                    <div class="step-number">02</div>
+                    <div class="step-number">2</div>
                     <h3 class="step-title">AI Analysis</h3>
-                    <p class="step-description">Our AI system analyzes your blood parameters and identifies patterns.</p>
+                    <p class="step-description">Our advanced AI processes your data and identifies key health indicators and patterns.</p>
                 </div>
+
                 <div class="step-card">
-                    <div class="step-number">03</div>
+                    <div class="step-number">3</div>
                     <h3 class="step-title">Get Insights</h3>
-                    <p class="step-description">Receive detailed insights and recommendations based on your results.</p>
+                    <p class="step-description">Receive detailed analysis and personalized health recommendations instantly.</p>
                 </div>
             </div>
         </section>
-        
-        <footer class="footer">
-            <a href="https://github.com/realranjan/DOCASSIST-AI" target="_blank" rel="noopener noreferrer">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-                </svg>
-                GitHub Repository
-            </a>
-        </footer>
     </div>
 
-    <div class="app-section" id="appSection">
-    <div class="container">
+    <div id="mainInterface" class="main-interface">
+        <div class="container">
             <header class="header">
-                <h1><a href="#" class="logo" onclick="showLandingPage()">DocAssist AI</a></h1>
-                <p>Medical Report Analysis System</p>
+                <h1>DocAssist AI</h1>
+                <p>Advanced Medical Report Analysis & Recommendations</p>
             </header>
 
             <div class="tabs">
@@ -1632,55 +1429,55 @@
                                 </svg>
                             </div>
                         </div>
-                </div>
+                    </div>
 
                     <div id="manualInput" class="input-section" style="display: none;">
                         <form id="predictionForm" onsubmit="submitForm(event)">
                             <div class="grid">
-                    <div class="form-group">
+                        <div class="form-group">
                                     <label for="HAEMATOCRIT">Haematocrit (%)</label>
                                     <input type="number" step="0.1" class="input" id="HAEMATOCRIT" name="HAEMATOCRIT" required>
-                    </div>
-                    <div class="form-group">
+                        </div>
+                        <div class="form-group">
                                     <label for="HAEMOGLOBINS">Haemoglobin (g/dL)</label>
                                     <input type="number" step="0.1" class="input" id="HAEMOGLOBINS" name="HAEMOGLOBINS" required>
-                    </div>
-                    <div class="form-group">
+                        </div>
+                        <div class="form-group">
                                     <label for="ERYTHROCYTE">Erythrocyte (M/µL)</label>
                                     <input type="number" step="0.1" class="input" id="ERYTHROCYTE" name="ERYTHROCYTE" required>
-                    </div>
-                    <div class="form-group">
+                        </div>
+                        <div class="form-group">
                                     <label for="LEUCOCYTE">Leucocyte (K/µL)</label>
                                     <input type="number" step="0.1" class="input" id="LEUCOCYTE" name="LEUCOCYTE" required>
-                    </div>
-                    <div class="form-group">
+                        </div>
+                        <div class="form-group">
                                     <label for="THROMBOCYTE">Thrombocyte (K/µL)</label>
                                     <input type="number" step="1" class="input" id="THROMBOCYTE" name="THROMBOCYTE" required>
-                    </div>
-                    <div class="form-group">
+                        </div>
+                        <div class="form-group">
                                     <label for="MCH">MCH (pg)</label>
                                     <input type="number" step="0.1" class="input" id="MCH" name="MCH" required>
-                    </div>
-                    <div class="form-group">
+                        </div>
+                        <div class="form-group">
                                     <label for="MCHC">MCHC (g/dL)</label>
                                     <input type="number" step="0.1" class="input" id="MCHC" name="MCHC" required>
-                    </div>
-                    <div class="form-group">
+                        </div>
+                        <div class="form-group">
                                     <label for="MCV">MCV (fL)</label>
                                     <input type="number" step="0.1" class="input" id="MCV" name="MCV" required>
-                    </div>
-                    <div class="form-group">
+                        </div>
+                        <div class="form-group">
                                     <label for="AGE">Age (years)</label>
                                     <input type="number" class="input" id="AGE" name="AGE" required>
-                    </div>
-                    <div class="form-group">
+                        </div>
+                        <div class="form-group">
                                     <label for="SEX">Sex</label>
                                     <select class="input" id="SEX" name="SEX" required>
-                            <option value="1">Male</option>
+                                <option value="1">Male</option>
                                         <option value="0">Female</option>
-                        </select>
-                    </div>
-            </div>
+                            </select>
+                        </div>
+                </div>
                             <button type="submit" class="button button-primary">Analyze</button>
                         </div>
                     </form>
@@ -1695,226 +1492,134 @@
                                 </svg>
                                 <p>Click to upload or drag and drop</p>
                                 <p class="text-sm text-muted">PDF files only</p>
-                    </div>
+                            </div>
                             <input type="file" id="file-input" accept=".pdf" style="display: none;" onchange="handleFileSelect(event)">
                             <button type="submit" class="button button-primary" style="margin-top: 1rem;">Upload & Analyze</button>
-                </form>
-                </div>
-            </div>
-        </div>
-        
-        <div id="overview" class="tab-content" style="display: none;">
-            <div id="noDataMessage" class="card" style="text-align: center; padding: 3rem;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 1rem; color: var(--muted-foreground);">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="17 8 12 3 7 8"/>
-                    <line x1="12" y1="3" x2="12" y2="15"/>
-                </svg>
-                <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem;">No Analysis Data Available</h3>
-                <p style="color: var(--muted-foreground);">Enter values manually or upload a PDF file to see the analysis overview.</p>
-                    </div>
-            <div id="analysisContent" class="analysis-grid" style="display: none;">
-                <div class="analysis-card">
-                    <div class="analysis-header">
-                        <h3>Blood Cell Analysis</h3>
-                        <p class="text-sm text-muted">Key blood parameters and their status</p>
-                </div>
-                    <div class="parameter-grid">
-                        <div class="parameter-card" id="wbcCard">
-                            <div class="parameter-header">
-                                <h4>White Blood Cells</h4>
-                                <span class="parameter-value">-</span>
-            </div>
-                            <div class="parameter-trend">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-                                </svg>
-                                <span class="trend-text">-</span>
-            </div>
-                            <div class="parameter-range">
-                                <div class="range-bar">
-                                    <div class="range-fill" style="width: 0%"></div>
-                                </div>
-                                <div class="range-labels">
-                                    <span>4.5</span>
-                                    <span>11.0</span>
-                                </div>
-                            </div>
-                            <p class="parameter-info">Reference: 4.5 - 11.0 K/µL</p>
-                        </div>
-                        <div class="parameter-card" id="plateletCard">
-                            <div class="parameter-header">
-                                <h4>Platelets</h4>
-                                <span class="parameter-value">-</span>
-                            </div>
-                            <div class="parameter-trend">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-                                </svg>
-                                <span class="trend-text">-</span>
-                            </div>
-                            <div class="parameter-range">
-                                <div class="range-bar">
-                                    <div class="range-fill" style="width: 0%"></div>
-                                </div>
-                                <div class="range-labels">
-                                    <span>150</span>
-                                    <span>450</span>
-                                </div>
-                            </div>
-                            <p class="parameter-info">Reference: 150 - 450 K/µL</p>
-                        </div>
-                        <div class="parameter-card" id="mchCard">
-                            <div class="parameter-header">
-                                <h4>MCH</h4>
-                                <span class="parameter-value">-</span>
-                            </div>
-                            <div class="parameter-trend">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-                                </svg>
-                                <span class="trend-text">-</span>
-                            </div>
-                            <div class="parameter-range">
-                                <div class="range-bar">
-                                    <div class="range-fill" style="width: 0%"></div>
-                                </div>
-                                <div class="range-labels">
-                                    <span>27</span>
-                                    <span>32</span>
-                                </div>
-                            </div>
-                            <p class="parameter-info">Reference: 27 - 32 pg</p>
-                        </div>
+                        </form>
                     </div>
                 </div>
+            </div>
+            
+            <div id="overview" class="tab-content" style="display: none;">
+                <div id="noDataMessage" class="card" style="text-align: center; padding: 3rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 1rem; color: var(--muted-foreground);">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem;">No Analysis Data Available</h3>
+                    <p style="color: var(--muted-foreground);">Enter values manually or upload a PDF file to see the analysis overview.</p>
+                </div>
+                <div id="analysisContent" class="analysis-grid" style="display: none;">
+                    <div class="analysis-card">
+                        <div class="analysis-header">
+                            <h3>Blood Cell Analysis</h3>
+                            <p class="text-sm text-muted">Key blood parameters and their status</p>
+                    </div>
+                        <div class="parameter-grid">
+                            <div class="parameter-card" id="wbcCard">
+                                <div class="parameter-header">
+                                    <h4>White Blood Cells</h4>
+                                    <span class="parameter-value">-</span>
+                        </div>
+                                <div class="parameter-trend">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                                    </svg>
+                                    <span class="trend-text">-</span>
+                        </div>
+                                <div class="parameter-range">
+                                    <div class="range-bar">
+                                        <div class="range-fill" style="width: 0%"></div>
+                                    </div>
+                                    <div class="range-labels">
+                                        <span>4.5</span>
+                                        <span>11.0</span>
+                                    </div>
+                                </div>
+                                <p class="parameter-info">Reference: 4.5 - 11.0 K/µL</p>
+                            </div>
+                            <div class="parameter-card" id="plateletCard">
+                                <div class="parameter-header">
+                                    <h4>Platelets</h4>
+                                    <span class="parameter-value">-</span>
+                                </div>
+                                <div class="parameter-trend">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                                    </svg>
+                                    <span class="trend-text">-</span>
+                                </div>
+                                <div class="parameter-range">
+                                    <div class="range-bar">
+                                        <div class="range-fill" style="width: 0%"></div>
+                                    </div>
+                                    <div class="range-labels">
+                                        <span>150</span>
+                                        <span>450</span>
+                                    </div>
+                                </div>
+                                <p class="parameter-info">Reference: 150 - 450 K/µL</p>
+                            </div>
+                            <div class="parameter-card" id="mchCard">
+                                <div class="parameter-header">
+                                    <h4>MCH</h4>
+                                    <span class="parameter-value">-</span>
+                                </div>
+                                <div class="parameter-trend">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                                    </svg>
+                                    <span class="trend-text">-</span>
+                                </div>
+                                <div class="parameter-range">
+                                    <div class="range-bar">
+                                        <div class="range-fill" style="width: 0%"></div>
+                                    </div>
+                                    <div class="range-labels">
+                                        <span>27</span>
+                                        <span>32</span>
+                                    </div>
+                                </div>
+                                <p class="parameter-info">Reference: 27 - 32 pg</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="analysis-card">
-                    <div class="analysis-header">
-                        <h3>Analysis Summary</h3>
-                        <p class="text-sm text-muted">Overall health assessment based on blood parameters</p>
-                    </div>
-                    <div class="summary-content">
-                        <div class="health-score">
-                            <div class="score-circle">
-                                <svg viewBox="0 0 36 36" class="circular-chart">
-                                    <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                                    <path class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                                    <text x="18" y="20.35" class="percentage">0%</text>
-                                </svg>
-                            </div>
-                            <p>Health Score</p>
+                    <div class="analysis-card">
+                        <div class="analysis-header">
+                            <h3>Analysis Summary</h3>
+                            <p class="text-sm text-muted">Overall health assessment based on blood parameters</p>
                         </div>
-                        <div class="health-summary">
-                            <p>Analysis of your blood parameters indicates:</p>
-                            <ul>
-                                <li>No data available for analysis</li>
-                            </ul>
+                        <div class="summary-content">
+                            <div class="health-score">
+                                <div class="score-circle">
+                                    <svg viewBox="0 0 36 36" class="circular-chart">
+                                        <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                        <path class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                        <text x="18" y="20.35" class="percentage">0%</text>
+                                    </svg>
+                                </div>
+                                <p>Health Score</p>
+                            </div>
+                            <div class="health-summary">
+                                <p>Analysis of your blood parameters indicates:</p>
+                                <ul>
+                                    <li>No data available for analysis</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div id="results" class="results" style="display: none;">
-            <!-- Results will be inserted here -->
+            <div id="results" class="results" style="display: none;">
+                <!-- Results will be inserted here -->
+            </div>
         </div>
     </div>
 
     <script>
-        // Add blood ranges for parameter validation
-        const BLOOD_RANGES = {
-            'HAEMATOCRIT': {
-                'low': {'value': 37, 'unit': '%'},
-                'high': {'value': 47, 'unit': '%'}
-            },
-            'HAEMOGLOBINS': {
-                'low': {'value': 12, 'unit': 'g/dL'},
-                'high': {'value': 16, 'unit': 'g/dL'}
-            },
-            'ERYTHROCYTE': {
-                'low': {'value': 4.2, 'unit': 'M/µL'},
-                'high': {'value': 5.4, 'unit': 'M/µL'}
-            },
-            'LEUCOCYTE': {
-                'low': {'value': 4.5, 'unit': 'K/µL'},
-                'high': {'value': 11.0, 'unit': 'K/µL'}
-            },
-            'THROMBOCYTE': {
-                'low': {'value': 150, 'unit': 'K/µL'},
-                'high': {'value': 450, 'unit': 'K/µL'}
-            },
-            'MCH': {
-                'low': {'value': 27, 'unit': 'pg'},
-                'high': {'value': 32, 'unit': 'pg'}
-            },
-            'MCHC': {
-                'low': {'value': 32, 'unit': 'g/dL'},
-                'high': {'value': 36, 'unit': 'g/dL'}
-            },
-            'MCV': {
-                'low': {'value': 80, 'unit': 'fL'},
-                'high': {'value': 96, 'unit': 'fL'}
-            }
-        };
-
-        // Add this at the beginning of your script section
-        // Intersection Observer for scroll animations
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.1
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    if (entry.target.classList.contains('features-section')) {
-                        entry.target.style.animation = 'fadeInUp 0.8s ease-out forwards';
-                    } else if (entry.target.classList.contains('feature-card')) {
-                        entry.target.style.animation = 'scaleIn 0.6s ease-out forwards';
-                        entry.target.style.animationDelay = `${entry.target.dataset.delay || 0}s`;
-                    } else if (entry.target.classList.contains('how-it-works')) {
-                        entry.target.style.animation = 'fadeInUp 0.8s ease-out forwards';
-                    } else if (entry.target.classList.contains('step-card')) {
-                        entry.target.style.animation = 'slideInRight 0.6s ease-out forwards';
-                        entry.target.style.animationDelay = `${entry.target.dataset.delay || 0}s`;
-                    }
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        // Function to initialize animations
-        function initializeAnimations() {
-            // Observe sections and cards
-            const featuresSection = document.querySelector('.features-section');
-            const featureCards = document.querySelectorAll('.feature-card');
-            const howItWorks = document.querySelector('.how-it-works');
-            const stepCards = document.querySelectorAll('.step-card');
-
-            if (featuresSection) {
-                observer.observe(featuresSection);
-            }
-
-            featureCards.forEach((card, index) => {
-                card.dataset.delay = (index * 0.2).toString();
-                observer.observe(card);
-            });
-
-            if (howItWorks) {
-                observer.observe(howItWorks);
-            }
-
-            stepCards.forEach((card, index) => {
-                card.dataset.delay = (index * 0.2).toString();
-                observer.observe(card);
-            });
-        }
-
-        // Initialize animations when the page loads
-        window.addEventListener('load', initializeAnimations);
-
         // Session data storage
         let sessionData = {
             totalReports: 0,
@@ -2037,12 +1742,12 @@
 
         function updateParameterCard(card, params) {
             const value = parseFloat(params.value);
-            const percentage = ((value - params.min) / (params.max - params.min)) * 100;
+            const percentage = Math.min(Math.max(((value - params.min) / (params.max - params.min)) * 100, 0), 100);
             const status = getParameterStatus(value, params.min, params.max);
 
             card.querySelector('.parameter-value').textContent = `${value} ${params.unit}`;
+            card.querySelector('.range-fill').style.width = `${percentage}%`;
             card.querySelector('.trend-text').textContent = status;
-            card.querySelector('.range-fill').style.width = `${Math.min(Math.max(percentage, 0), 100)}%`;
             card.querySelector('.range-labels').innerHTML = `
                 <span>${params.min}</span>
                 <span>${params.max}</span>
@@ -2223,15 +1928,6 @@
             resultsDiv.style.display = 'block';
             
             if (result.status === 'success') {
-                // Store the extracted values for the overview tab
-                if (result.extracted_values) {
-                    sessionStorage.setItem('currentAnalysis', JSON.stringify(result.extracted_values));
-                    if (document.getElementById('overview').style.display !== 'none') {
-                        updateDashboard(result.extracted_values);
-                    }
-                }
-
-                // Combine all elements in the correct order
                 resultsDiv.innerHTML = `
                     <div class="card">
                         <div class="alert alert-success">
@@ -2241,32 +1937,11 @@
                             </svg>
                             <div>
                                 <strong>Analysis Complete</strong>
-                                <p>Recommended Care Type: ${result.prediction}</p>
+                                Recommended Care Type: ${result.prediction}
                             </div>
                         </div>
-
-                        ${result.medical_report ? `
                         <div class="medical-report">
-                                ${result.medical_report}
-                        </div>
-                        ` : ''}
-
-                        ${result.recommendations ? `
-                            <div class="section recommendations">
-                                <h3>Recommendations</h3>
-                                <div class="treatment-list">
-                                    ${result.recommendations}
-                                </div>
-                            </div>
-                        ` : ''}
-
-                        <div class="report-footer">
-                            <div class="notice">
-                                ${result.prediction === "Inpatient" 
-                                    ? "URGENT MEDICAL ATTENTION IS NECESSARY" 
-                                    : "Condition is manageable with outpatient care"}
-                            </div>
-                            <div class="generated-by">Report Generated by AI-Powered Medical Decision Support System</div>
+                            ${result.recommendations}
                         </div>
                     </div>
                 `;
@@ -2280,7 +1955,7 @@
                         </svg>
                         <div>
                             <strong>Error</strong>
-                            <p>${result.message}</p>
+                            ${result.message}
                         </div>
                     </div>
                 `;
@@ -2333,32 +2008,17 @@
             }
         }
 
-        // Initialize with manual input selected
-        window.addEventListener('load', function() {
-            toggleInputMethod('manual');
-            // ... existing load event code ...
-        });
-
-        function showApp() {
-            document.getElementById('landingPage').style.display = 'none';
-            document.getElementById('appSection').style.display = 'block';
+        function scrollToFeatures() {
+            document.getElementById('features').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
         }
 
-        function showLandingPage() {
-            document.querySelector('.landing-page').style.display = 'block';
-            document.querySelector('.app-section').style.display = 'none';
-            
-            // Reset any active animations
-            const animatedElements = document.querySelectorAll('.animate');
-            animatedElements.forEach(el => {
-                el.style.opacity = '0';
-            });
-            
-            // Reinitialize animations
-            initializeAnimations();
-            
-            // Prevent default link behavior
-            return false;
+        function startApp() {
+            document.getElementById('landingPage').style.display = 'none';
+            document.getElementById('mainInterface').style.display = 'block';
+            // Initialize with manual input method selected
+            toggleInputMethod('manual');
         }
     </script>
 </body>

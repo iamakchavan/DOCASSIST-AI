@@ -1,0 +1,341 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment - More Specific
+venv/
+venv*/
+**/venv/
+.venv/
+env/
+ENV/
+.env
+env.bak/
+venv.bak/
+**/Lib/site-packages/
+**/Scripts/
+bin/
+include/
+share/
+
+# Python Site Packages
+**/site-packages/
+**/.Python
+**/python*/
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+
+# Node dependencies
+node_modules/
+**/node_modules/
+package-lock.json
+**/package-lock.json
+yarn.lock
+**/yarn.lock
+
+# Flask
+instance/
+.webassets-cache
+flask_session/
+**/*.pyc
+**/__pycache__/
+**/migrations/
+
+# Development/Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Project specific
+uploads/
+*.pdf
+models/*.pkl
+*.h5
+*.model
+*.joblib
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build and distribution
+dist/
+build/
+*.egg-info/
+*.egg
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.dylib
+*.dll
+
+# Test coverage
+.coverage
+htmlcov/
+.tox/
+.nox/
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Backup files
+*.bak
+*.backup
+*~
+*.swp
+*.swo
+
+# Local development
+.env
+.env.*
+*.local
+
+# System Files
+.DS_Store
+Thumbs.db
+.directory
+.Trash-*
+.nfs*
+Icon?
+ehthumbs.db
+Desktop.ini
+
+# IDE specific files
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+.project
+.pydevproject
+.settings/
+*.code-workspace
+.history/
+
+# Compiled Python files
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/__pycache__/
+**/.Python
+**/python*/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff
+instance/
+.webassets-cache
+
+# Scrapy stuff
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+.history
+
+# IDE - PyCharm
+.idea/
+*.iml
+*.iws
+.idea_modules/
+
+# IDE - Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# IDE - Eclipse
+.project
+.pydevproject
+.settings/
+
+# Operating System
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# Project specific
+uploads/
+*.pdf
+models/*.pkl
+*.h5
+*.model
+*.joblib
+node_modules/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache 

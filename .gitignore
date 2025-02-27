@@ -143,7 +143,7 @@ flask_session/
 # Project specific
 uploads/
 *.pdf
-models/*.pkl
+
 *.h5
 *.model
 *.joblib

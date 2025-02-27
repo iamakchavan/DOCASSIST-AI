@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOCASSIST-AI Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fe;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .health-score {
+            text-align: center;
+            position: relative;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .score-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .score-label {
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        .parameter-card {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .parameter-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-normal { background-color: #4CAF50; }
+        .status-warning { background-color: #FFC107; }
+        .status-critical { background-color: #FF5252; }
+
+        .parameter-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .parameter-range {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="left-panel">
+            <div class="card health-score">
+                <h2>Health Score</h2>
+                <div class="score-circle">
+                    <canvas id="scoreChart"></canvas>
+                    <div class="score-value" id="healthScoreValue"></div>
+                </div>
+                <div class="score-label">Overall Health Status</div>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="chart-grid">
+                <div class="chart-card">
+                    <div class="chart-title">
+                        <h3>Blood Cell Parameters</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="bloodParamsChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-title">
+                        <h3>Red Blood Cell Indices</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="rbcIndicesChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-title">
+                        <h3>Detailed Blood Analysis</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="detailedAnalysisChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-title">
+                        <h3>Parameter Comparison</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="comparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="parameter-grid">
+                <div id="parameterCards"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="parameterModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="parameterTitle"></h2>
+            <div id="parameterDetail"></div>
+            <canvas id="parameterTrendChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        function calculateHealthScore(data) {
+            // Define normal ranges
+            const normalRanges = {
+                HAEMATOCRIT: { min: 38, max: 50, weight: 15 },    // %
+                HAEMOGLOBINS: { min: 13.8, max: 17.2, weight: 20 }, // g/dL
+                ERYTHROCYTE: { min: 4.7, max: 6.1, weight: 15 },  // mill/µL
+                LEUCOCYTE: { min: 4000, max: 11000, weight: 10 }, // /µL
+                THROMBOCYTE: { min: 150000, max: 450000, weight: 10 }, // /µL
+                MCV: { min: 80, max: 100, weight: 10 },           // fL
+                MCH: { min: 27, max: 33, weight: 10 },            // pg
+                MCHC: { min: 32, max: 36, weight: 10 }            // g/dL
+            };
+
+            let totalScore = 0;
+
+            // Calculate score for each parameter
+            for (const [param, value] of Object.entries(data)) {
+                if (normalRanges[param]) {
+                    const { min, max, weight } = normalRanges[param];
+                    let paramScore;
+
+                    // Normalize values for LEUCOCYTE and THROMBOCYTE (convert to thousands)
+                    let normalizedValue = value;
+                    if (param === 'LEUCOCYTE') normalizedValue *= 1000;
+                    if (param === 'THROMBOCYTE') normalizedValue *= 1000;
+
+                    if (min <= normalizedValue && normalizedValue <= max) {
+                        paramScore = weight; // Full points if within range
+                    } else if (min * 0.9 <= normalizedValue && normalizedValue <= max * 1.1) {
+                        paramScore = weight * 0.7; // 70% points if slightly out of range
+                    } else {
+                        paramScore = weight * 0.3; // 30% points if critically out of range
+                    }
+
+                    totalScore += paramScore;
+                }
+            }
+
+            return Math.round(totalScore);
+        }
+
+        function getParameterStatus(value, min, max) {
+            if (value < min * 0.8 || value > max * 1.2) return 'critical';
+            if (value < min || value > max) return 'warning';
+            return 'normal';
+        }
+
+        function initializeDashboard(data) {
+            const healthScore = calculateHealthScore(data.features);
+            
+            // Update score display with animation
+            const scoreElement = document.getElementById('healthScoreValue');
+            animateValue(scoreElement, 0, healthScore, 2000);
+
+            // Initialize Health Score Circle with animation
+            const scoreCtx = document.getElementById('scoreChart').getContext('2d');
+            new Chart(scoreCtx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [healthScore, 100 - healthScore],
+                        backgroundColor: [getScoreColor(healthScore), '#f0f0f0'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    cutout: '80%',
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Health Score: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeInOutQuart'
+                    }
+                }
+            });
+
+            // Add score interpretation
+            const interpretation = getScoreInterpretation(healthScore);
+            document.querySelector('.score-label').innerHTML = `
+                Overall Health Status<br>
+                <span style="color: ${getScoreColor(healthScore)}; font-size: 14px;">
+                    ${interpretation}
+                </span>
+            `;
+
+            // Blood Parameters Chart
+            const bloodParamsCtx = document.getElementById('bloodParamsChart').getContext('2d');
+            new Chart(bloodParamsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Haematocrit', 'Haemoglobin', 'RBC'],
+                    datasets: [{
+                        label: 'Current Values',
+                        data: [
+                            data.features.HAEMATOCRIT,
+                            data.features.HAEMOGLOBINS,
+                            data.features.ERYTHROCYTE
+                        ],
+                        backgroundColor: '#4CAF50'
+                    }, {
+                        label: 'Normal Range',
+                        data: [42, 14, 4.75],
+                        type: 'line',
+                        borderColor: '#2196F3',
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+
+            // RBC Indices Chart
+            const rbcIndicesCtx = document.getElementById('rbcIndicesChart').getContext('2d');
+            new Chart(rbcIndicesCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['MCH', 'MCHC', 'MCV'],
+                    datasets: [{
+                        label: 'Values',
+                        data: [
+                            data.features.MCH,
+                            data.features.MCHC,
+                            data.features.MCV
+                        ],
+                        backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                        borderColor: '#4CAF50'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // Create Parameter Cards
+            createParameterCards(data.features);
+
+            // Add new charts
+            createDetailedBloodAnalysis(data.features);
+            createComparisonChart(data.features);
+        }
+
+        function createParameterCards(data) {
+            const container = document.getElementById('parameterCards');
+            const parameters = [
+                { key: 'HAEMATOCRIT', name: 'Haematocrit' },
+                { key: 'HAEMOGLOBINS', name: 'Haemoglobin' },
+                { key: 'ERYTHROCYTE', name: 'Red Blood Cells' }
+            ];
+
+            container.innerHTML = parameters.map(param => {
+                const value = data[param.key];
+                const range = normalRanges[param.key];
+                const status = getParameterStatus(value, range.min, range.max);
+
+                return `
+                    <div class="parameter-card">
+                        <div class="parameter-header">
+                            <span class="status-indicator status-${status}"></span>
+                            <span>${param.name}</span>
+                        </div>
+                        <div class="parameter-value">${value} ${range.unit}</div>
+                        <div class="parameter-range">Normal range: ${range.min} - ${range.max} ${range.unit}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getScoreColor(score) {
+            if (score >= 90) return '#4CAF50';  // Green
+            if (score >= 80) return '#8BC34A';  // Light Green
+            if (score >= 70) return '#FFC107';  // Amber
+            if (score >= 60) return '#FF9800';  // Orange
+            return '#FF5252';  // Red
+        }
+
+        function animateValue(element, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+                element.textContent = value;
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        function getScoreInterpretation(score) {
+            if (score >= 90) return 'Excellent Health Status';
+            if (score >= 80) return 'Good Health Status';
+            if (score >= 70) return 'Fair Health Status';
+            if (score >= 60) return 'Needs Attention';
+            return 'Requires Medical Consultation';
+        }
+
+        function createDetailedBloodAnalysis(data) {
+            const ctx = document.getElementById('detailedAnalysisChart').getContext('2d');
+            
+            // Create subplot-like effect using multiple datasets
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['HAEMATOCRIT', 'HAEMOGLOBINS', 'ERYTHROCYTE', 'LEUCOCYTE', 'THROMBOCYTE', 'MCV', 'MCH', 'MCHC'],
+                    datasets: [{
+                        label: 'Current Values',
+                        data: [
+                            data.HAEMATOCRIT,
+                            data.HAEMOGLOBINS,
+                            data.ERYTHROCYTE,
+                            data.LEUCOCYTE,
+                            data.THROMBOCYTE/1000, // Convert to K/µL for better visualization
+                            data.MCV,
+                            data.MCH,
+                            data.MCHC
+                        ],
+                        backgroundColor: [
+                            '#FF6384',
+                            '#36A2EB',
+                            '#FFCE56',
+                            '#4BC0C0',
+                            '#9966FF',
+                            '#FF9F40',
+                            '#FF6384',
+                            '#36A2EB'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Value'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const param = context.label;
+                                    const value = context.raw;
+                                    const range = normalRanges[param];
+                                    return [
+                                        `Value: ${value}`,
+                                        `Normal Range: ${range.min} - ${range.max}`,
+                                        `Status: ${getParameterStatus(value, range.min, range.max)}`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const index = elements[0].index;
+                            const param = event.chart.data.labels[index];
+                            showParameterDetail(param, data[param]);
+                        }
+                    }
+                }
+            });
+        }
+
+        function createComparisonChart(data) {
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+            
+            // Calculate percentages of normal range
+            const getPercentageOfRange = (value, min, max) => {
+                return ((value - min) / (max - min)) * 100;
+            };
+
+            const parameters = Object.keys(normalRanges);
+            const percentages = parameters.map(param => {
+                const value = data[param];
+                const { min, max } = normalRanges[param];
+                return getPercentageOfRange(value, min, max);
+            });
+
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: parameters,
+                    datasets: [{
+                        label: 'Parameter Status (%)',
+                        data: percentages,
+                        fill: true,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgb(54, 162, 235)',
+                        pointBackgroundColor: 'rgb(54, 162, 235)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(54, 162, 235)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        function showParameterDetail(param, value) {
+            const modal = document.getElementById('parameterModal');
+            const title = document.getElementById('parameterTitle');
+            const detail = document.getElementById('parameterDetail');
+            const range = normalRanges[param];
+            
+            title.textContent = param;
+            detail.innerHTML = `
+                <div class="parameter-detail">
+                    <p><strong>Current Value:</strong> ${value} ${range.unit}</p>
+                    <p><strong>Normal Range:</strong> ${range.min} - ${range.max} ${range.unit}</p>
+                    <p><strong>Status:</strong> ${getParameterStatus(value, range.min, range.max)}</p>
+                    <p><strong>Weight in Health Score:</strong> ${range.weight}%</p>
+                </div>
+            `;
+
+            // Create trend simulation
+            const trendCtx = document.getElementById('parameterTrendChart').getContext('2d');
+            new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: param,
+                        data: generateTrendData(value, range),
+                        borderColor: '#4CAF50',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            modal.style.display = 'block';
+        }
+
+        // Helper function to generate trend data
+        function generateTrendData(currentValue, range) {
+            const variation = (range.max - range.min) * 0.1;
+            return Array(6).fill(0).map(() => 
+                currentValue + (Math.random() - 0.5) * variation
+            );
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            const reportData = localStorage.getItem('reportData');
+            if (!reportData) {
+                window.location.href = '/';
+                return;
+            }
+
+            const data = JSON.parse(reportData);
+            initializeDashboard(data);
+        });
+    </script>
+</body>
+</html> 

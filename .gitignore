@@ -21,7 +21,7 @@ wheels/
 *.egg
 MANIFEST
 
-# Virtual Environment - More Specific
+# Virtual Environment
 venv/
 venv*/
 **/venv/
@@ -31,11 +31,97 @@ ENV/
 .env
 env.bak/
 venv.bak/
-**/Lib/site-packages/
-**/Scripts/
-bin/
-include/
-share/
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test coverage
+.coverage
+htmlcov/
+.tox/
+.nox/
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Local development
+.env
+.env.*
+*.local
+
+# System Files
+.DS_Store
+Thumbs.db
+.directory
+.Trash-*
+.nfs*
+Icon?
+ehthumbs.db
+Desktop.ini
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Node dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Operating System
+# Windows
+Thumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# Temporary upload directory
+uploads/temp/*
+!uploads/temp/.gitkeep
 
 # Python Site Packages
 **/site-packages/
@@ -46,14 +132,6 @@ share/
 **/*.pyo
 **/*.pyd
 
-# Node dependencies
-node_modules/
-**/node_modules/
-package-lock.json
-**/package-lock.json
-yarn.lock
-**/yarn.lock
-
 # Flask
 instance/
 .webassets-cache
@@ -61,15 +139,6 @@ flask_session/
 **/*.pyc
 **/__pycache__/
 **/migrations/
-
-# Development/Editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-Thumbs.db
 
 # Project specific
 uploads/
@@ -110,72 +179,6 @@ build/
 htmlcov/
 .tox/
 .nox/
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-
-# Backup files
-*.bak
-*.backup
-*~
-*.swp
-*.swo
-
-# Local development
-.env
-.env.*
-*.local
-
-# System Files
-.DS_Store
-Thumbs.db
-.directory
-.Trash-*
-.nfs*
-Icon?
-ehthumbs.db
-Desktop.ini
-
-# IDE specific files
-.idea/
-.vscode/
-*.sublime-workspace
-*.sublime-project
-.project
-.pydevproject
-.settings/
-*.code-workspace
-.history/
-
-# Compiled Python files
-**/*.pyc
-**/*.pyo
-**/*.pyd
-**/__pycache__/
-**/.Python
-**/python*/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# PyInstaller
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
 .coverage.*
 .cache
 nosetests.xml

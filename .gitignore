@@ -140,17 +140,7 @@ flask_session/
 **/__pycache__/
 **/migrations/
 
-# Project specific
-uploads/
-*.pdf
 
-*.h5
-*.model
-*.joblib
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
 # Logs and databases
 *.log

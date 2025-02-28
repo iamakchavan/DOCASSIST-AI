@@ -22,17 +22,19 @@ services:
       pip install --no-cache-dir pandas==1.3.0
       # Install remaining requirements
       pip install -r requirements.txt
-      # Ensure model directories exist
+      # Create necessary directories
       mkdir -p backend/models
-      # Copy model file to both possible locations
+      # Copy model file
       cp models/final_model_pipeline.pkl backend/models/
       # Print debug information
       echo "Model file location check:"
       ls -l models/
       ls -l backend/models/
-      # Copy app.py to the root directory
-      cp backend/app.py .
-    startCommand: gunicorn app:app
+      # Debug directory structure
+      echo "Current directory structure:"
+      ls -R
+    startCommand: |
+      cd backend && PYTHONPATH=/opt/render/project/src/backend gunicorn --chdir /opt/render/project/src/backend app:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.8.0
@@ -43,6 +45,6 @@ services:
       - key: NPY_NUM_BUILD_JOBS
         value: "4"
       - key: MODEL_PATH
-        value: "models/final_model_pipeline.pkl"
+        value: "backend/models/final_model_pipeline.pkl"
       - key: PYTHONPATH
-        value: "." 
+        value: "/opt/render/project/src/backend" 

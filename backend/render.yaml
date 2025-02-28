@@ -23,20 +23,17 @@ services:
       # Install remaining requirements
       pip install -r requirements.txt
       # Create necessary directories
-      mkdir -p backend/models
-      # Copy model file
-      cp models/final_model_pipeline.pkl backend/models/
+      mkdir -p models
+      # Copy model file from parent directory if it exists
+      if [ -f "../models/final_model_pipeline.pkl" ]; then
+        cp ../models/final_model_pipeline.pkl models/
+      fi
       # Print debug information
       echo "Model file location check:"
       ls -l models/
-      ls -l backend/models/
       # Debug directory structure
       echo "Current directory structure:"
       ls -R
-      # Copy app.py to the correct location
-      cp backend/app.py .
-      echo "Content of current directory after copying app.py:"
-      ls -la
     startCommand: gunicorn app:app --bind=0.0.0.0:$PORT
     envVars:
       - key: PYTHON_VERSION
@@ -48,6 +45,6 @@ services:
       - key: NPY_NUM_BUILD_JOBS
         value: "4"
       - key: MODEL_PATH
-        value: "backend/models/final_model_pipeline.pkl"
+        value: "models/final_model_pipeline.pkl"
       - key: PORT
         value: "10000" 

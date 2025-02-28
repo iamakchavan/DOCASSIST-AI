@@ -3,7 +3,7 @@ flask-cors==4.0.0
 numpy==1.21.6
 pandas==1.5.3
 PyPDF2==3.0.1
-scikit-learn==1.5.1
+scikit-learn==1.0.2
 lightgbm==3.3.5
 scipy==1.7.3
 joblib==1.2.0

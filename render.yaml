@@ -2,6 +2,7 @@ services:
   - type: web
     name: docassist-backend
     env: python
+    runtime: python3.8.16
     buildCommand: |
       # Update package list and install system dependencies
       apt-get update

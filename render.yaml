@@ -3,12 +3,21 @@ services:
     name: docassist-backend
     env: python
     buildCommand: |
-      apt-get update && apt-get install -y gfortran build-essential python3-dev
-      pip install --upgrade pip setuptools wheel
+      # Update package list and install system dependencies
+      apt-get update
+      apt-get install -y gfortran gcc g++ make python3-dev
+      # Upgrade pip and install build tools
+      python -m pip install --upgrade pip
+      pip install --no-cache-dir setuptools wheel
+      # Install scipy and numpy first
+      pip install --no-cache-dir numpy==1.21.6 scipy==1.7.3
+      # Install remaining requirements
       pip install -r requirements.txt
     startCommand: cd backend && gunicorn app:app
     envVars:
       - key: PYTHON_VERSION
-        value: 3.8.17
+        value: 3.8.16
       - key: FLASK_ENV
-        value: production 
+        value: production
+      - key: PYTHONUNBUFFERED
+        value: "true" 

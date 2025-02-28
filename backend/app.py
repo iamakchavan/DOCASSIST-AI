@@ -324,12 +324,32 @@ def extract_medical_values(text):
 
 # Feature engineering function exactly as used in training
 def feature_engineering(df):
+    # Ensure column order matches training
+    columns = ['HAEMATOCRIT', 'HAEMOGLOBINS', 'ERYTHROCYTE', 'LEUCOCYTE',
+               'THROMBOCYTE', 'MCH', 'MCHC', 'MCV', 'AGE', 'SEX_ENCODED']
+    
+    # Create engineered features
     df['THROMBOCYTE_LEUCOCYTE_RATIO'] = df['THROMBOCYTE'] / (df['LEUCOCYTE'] + 1e-6)
     df['ERYTHROCYTE_LEUCOCYTE'] = df['ERYTHROCYTE'] * df['LEUCOCYTE']
+    
+    # Add engineered features to columns
+    columns.extend(['THROMBOCYTE_LEUCOCYTE_RATIO', 'ERYTHROCYTE_LEUCOCYTE'])
+    
+    # Ensure all columns are present and in correct order
+    return df[columns]
+
+def prepare_input_data(data):
+    """Prepare input data with correct feature names and order"""
+    # Create DataFrame with proper column names
+    df = pd.DataFrame([data])
+    
+    # Apply feature engineering
+    df = feature_engineering(df)
+    
     return df
 
 # Define model path
-MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'models', 'final_model_pipeline.pkl')
+MODEL_PATH = os.path.join(os.path.dirname(__file__), 'models', 'final_model_pipeline.pkl')
 
 # Global variable for model
 model = None
@@ -337,21 +357,37 @@ model = None
 def load_model():
     global model
     try:
-        # For testing purposes, we'll create a mock model
-        print("Development mode: Using mock model")
-        class MockModel:
-            def predict(self, X):
-                # Always return outpatient (0) for testing
-                return [0]
-        model = MockModel()
+        if not os.path.exists(MODEL_PATH):
+            print(f"Model not found at {MODEL_PATH}")
+            # Try alternate path
+            alternate_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'final_model_pipeline.pkl')
+            if os.path.exists(alternate_path):
+                print(f"Found model at alternate path: {alternate_path}")
+                model = joblib.load(alternate_path)
+            else:
+                raise FileNotFoundError(f"Model not found at {MODEL_PATH} or {alternate_path}")
+        else:
+            print(f"Loading model from {MODEL_PATH}")
+            model = joblib.load(MODEL_PATH)
+        
+        if model is None:
+            raise ValueError("Model failed to load")
+            
+        # Verify model has predict method
+        if not hasattr(model, 'predict'):
+            raise AttributeError("Loaded model does not have predict method")
+            
+        print("Model loaded successfully")
         return True
     except Exception as e:
         print(f"Error loading model: {str(e)}")
+        print(f"Current working directory: {os.getcwd()}")
+        print(f"Directory contents: {os.listdir(os.path.dirname(MODEL_PATH))}")
         return False
 
 # Load model when starting the server
 if not load_model():
-    print("Warning: Running in development mode without model")
+    raise RuntimeError("Failed to load the model. Cannot start server without a working model.")
 
 @app.route('/predict/file', methods=['POST'])
 def predict_from_file():
@@ -401,7 +437,7 @@ def predict_from_file():
                 'message': f'Missing required fields in PDF: {", ".join(missing_fields)}'
             }), 400
         
-        # Create DataFrame for prediction
+        # Create input data dictionary
         input_data = {
             'HAEMATOCRIT': extracted_data['HAEMATOCRIT'],
             'HAEMOGLOBINS': extracted_data['HAEMOGLOBINS'],
@@ -415,8 +451,8 @@ def predict_from_file():
             'SEX_ENCODED': extracted_data['SEX']
         }
         
-        # Convert to DataFrame
-        input_df = pd.DataFrame([input_data])
+        # Prepare input data with correct feature names and order
+        input_df = prepare_input_data(input_data)
         
         # Get abnormal values before prediction
         abnormal_values = {}

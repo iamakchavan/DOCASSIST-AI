@@ -17,6 +17,14 @@ services:
       LDFLAGS="-shared" pip install --no-cache-dir scipy==1.7.3
       # Install remaining requirements
       pip install -r requirements.txt
+      # Ensure model directories exist
+      mkdir -p backend/models
+      # Copy model file to both possible locations
+      cp models/final_model_pipeline.pkl backend/models/
+      # Print debug information
+      echo "Model file location check:"
+      ls -l models/
+      ls -l backend/models/
     startCommand: cd backend && gunicorn app:app
     envVars:
       - key: PYTHON_VERSION
@@ -26,4 +34,6 @@ services:
       - key: PYTHONUNBUFFERED
         value: "true"
       - key: NPY_NUM_BUILD_JOBS
-        value: "4" 
+        value: "4"
+      - key: MODEL_PATH
+        value: "models/final_model_pipeline.pkl" 

@@ -9,7 +9,7 @@ import re
 import os
 from werkzeug.utils import secure_filename
 from datetime import datetime
-from model_utils import feature_engineering, prepare_input_data, load_model
+from model_wrapper import ModelWrapper
 
 app = Flask(__name__)
 CORS(app)
@@ -675,8 +675,15 @@ model = None
 
 # Load model when starting the server
 try:
-    model = load_model(MODEL_PATH)
+    # Load the base model
+    base_model = joblib.load(MODEL_PATH)
+    # Wrap it in our ModelWrapper
+    model = ModelWrapper(base_model)
+    print("Model loaded and wrapped successfully")
 except Exception as e:
+    print(f"Error loading model: {str(e)}")
+    print(f"Current working directory: {os.getcwd()}")
+    print(f"Directory contents: {os.listdir(os.path.dirname(MODEL_PATH))}")
     raise RuntimeError(f"Failed to load the model: {str(e)}")
 
 if model is None:

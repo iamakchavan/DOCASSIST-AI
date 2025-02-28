@@ -31,8 +31,8 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.8.0
-      - key: FLASK_ENV
-        value: production
+      - key: FLASK_DEBUG
+        value: "0"
       - key: PYTHONUNBUFFERED
         value: "true"
       - key: NPY_NUM_BUILD_JOBS

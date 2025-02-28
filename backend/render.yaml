@@ -22,16 +22,9 @@ services:
       pip install --no-cache-dir lightgbm==3.3.2
       # Install remaining requirements
       pip install -r requirements.txt
-      # Create necessary directories
-      mkdir -p models
-      # Copy model file from parent directory if it exists
-      if [ -f "../models/final_model_pipeline.pkl" ]; then
-        cp ../models/final_model_pipeline.pkl models/
-      fi
       # Print debug information
-      echo "Model file location check:"
-      ls -l models/
-      # Debug directory structure
+      echo "Verifying model file exists:"
+      ls -l models/final_model_pipeline.pkl
       echo "Current directory structure:"
       ls -R
     startCommand: gunicorn app:app --bind=0.0.0.0:$PORT

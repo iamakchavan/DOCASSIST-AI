@@ -418,30 +418,37 @@ def predict_from_file():
         # Convert to DataFrame
         input_df = pd.DataFrame([input_data])
         
-        # Make prediction using the pipeline
-        prediction = model.predict(input_df)
-        
-        # Convert prediction to meaningful response
-        result = "Inpatient" if prediction[0] == 1 else "Outpatient"
-        
-        # Get abnormal values
+        # Get abnormal values before prediction
         abnormal_values = {}
+        severe_conditions = 0
         for param, value in input_data.items():
             if param in BLOOD_RANGES:
                 ranges = BLOOD_RANGES[param]
                 if value < ranges['low']['value'] or value > ranges['high']['value']:
                     abnormal_values[param] = {'value': value}
+                    # Check for severe conditions
+                    if value < ranges['low']['value'] * 0.8 or value > ranges['high']['value'] * 1.2:
+                        severe_conditions += 1
 
         # Check for disease patterns
         detected_diseases = check_disease_patterns(input_data)
         
+        # Make prediction, but override if severe conditions are present
+        model_prediction = model.predict(input_df)
+        
+        # Override prediction if severe conditions are present
+        final_prediction = 1 if (severe_conditions >= 2 or len(detected_diseases) >= 1) else model_prediction[0]
+        
         # Generate medical report
         medical_report = format_medical_report(
-            prediction[0],
+            final_prediction,
             input_data,
             detected_diseases,
             abnormal_values
         )
+        
+        # Convert prediction to meaningful response
+        result = "Inpatient" if final_prediction == 1 else "Outpatient"
         
         # Clean up - remove uploaded file
         os.remove(filepath)
@@ -449,7 +456,7 @@ def predict_from_file():
         return jsonify({
             'status': 'success',
             'prediction': result,
-            'prediction_code': int(prediction[0]),
+            'prediction_code': int(final_prediction),
             'extracted_values': extracted_data,
             'medical_report': medical_report,
             'recommendations': format_recommendations(detected_diseases) if detected_diseases else None
@@ -692,35 +699,42 @@ def predict():
         # Convert to DataFrame
         input_df = pd.DataFrame([input_data])
         
-        # Make prediction
-        prediction = model.predict(input_df)
-        
-        # Get abnormal values
+        # Get abnormal values before prediction
         abnormal_values = {}
+        severe_conditions = 0
         for param, value in input_data.items():
             if param in BLOOD_RANGES:
                 ranges = BLOOD_RANGES[param]
                 if value < ranges['low']['value'] or value > ranges['high']['value']:
                     abnormal_values[param] = {'value': value}
+                    # Check for severe conditions
+                    if value < ranges['low']['value'] * 0.8 or value > ranges['high']['value'] * 1.2:
+                        severe_conditions += 1
 
         # Check for disease patterns
         detected_diseases = check_disease_patterns(input_data)
         
+        # Make prediction, but override if severe conditions are present
+        model_prediction = model.predict(input_df)
+        
+        # Override prediction if severe conditions are present
+        final_prediction = 1 if (severe_conditions >= 2 or len(detected_diseases) >= 1) else model_prediction[0]
+        
         # Generate medical report
         medical_report = format_medical_report(
-            prediction[0],
+            final_prediction,
             input_data,
             detected_diseases,
             abnormal_values
         )
         
         # Convert prediction to meaningful response
-        result = "Inpatient" if prediction[0] == 1 else "Outpatient"
+        result = "Inpatient" if final_prediction == 1 else "Outpatient"
         
         return jsonify({
             'status': 'success',
             'prediction': result,
-            'prediction_code': int(prediction[0]),
+            'prediction_code': int(final_prediction),
             'medical_report': medical_report,
             'recommendations': format_recommendations(detected_diseases) if detected_diseases else None,
             'blood_ranges': BLOOD_RANGES

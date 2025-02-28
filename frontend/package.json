@@ -1,13 +1,17 @@
 {
-  "name": "model-deployment-frontend",
+  "name": "docassist-frontend",
   "version": "1.0.0",
-  "description": "Frontend for ML model deployment",
-  "main": "server.js",
+  "description": "Frontend for DocAssist AI",
   "scripts": {
-    "start": "node server.js"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "express": "^4.17.1",
-    "axios": "^0.21.1"
+    "next": "^13.4.19",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "axios": "^1.3.4"
   }
 } 

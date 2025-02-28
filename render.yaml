@@ -33,8 +33,11 @@ services:
       # Debug directory structure
       echo "Current directory structure:"
       ls -R
-    startCommand: |
-      cd backend && PYTHONPATH=/opt/render/project/src/backend gunicorn --chdir /opt/render/project/src/backend app:app
+      # Copy app.py to the correct location
+      cp backend/app.py .
+      echo "Content of current directory after copying app.py:"
+      ls -la
+    startCommand: gunicorn app:app --bind=0.0.0.0:$PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.8.0
@@ -46,5 +49,5 @@ services:
         value: "4"
       - key: MODEL_PATH
         value: "backend/models/final_model_pipeline.pkl"
-      - key: PYTHONPATH
-        value: "/opt/render/project/src/backend" 
+      - key: PORT
+        value: "10000" 

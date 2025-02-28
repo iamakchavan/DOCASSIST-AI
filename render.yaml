@@ -30,7 +30,9 @@ services:
       echo "Model file location check:"
       ls -l models/
       ls -l backend/models/
-    startCommand: cd backend && gunicorn app:app
+      # Copy app.py to the root directory
+      cp backend/app.py .
+    startCommand: gunicorn app:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.8.0
@@ -41,4 +43,6 @@ services:
       - key: NPY_NUM_BUILD_JOBS
         value: "4"
       - key: MODEL_PATH
-        value: "models/final_model_pipeline.pkl" 
+        value: "models/final_model_pipeline.pkl"
+      - key: PYTHONPATH
+        value: "." 

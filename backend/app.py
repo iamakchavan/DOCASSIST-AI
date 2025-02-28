@@ -323,6 +323,158 @@ def extract_medical_values(text):
     
     return results
 
+<<<<<<< HEAD
+=======
+# Feature engineering function exactly as used in training
+def feature_engineering(df):
+    df['THROMBOCYTE_LEUCOCYTE_RATIO'] = df['THROMBOCYTE'] / (df['LEUCOCYTE'] + 1e-6)
+    df['ERYTHROCYTE_LEUCOCYTE'] = df['ERYTHROCYTE'] * df['LEUCOCYTE']
+    return df
+
+# Define model path
+MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'models', 'final_model_pipeline.pkl')
+
+# Global variable for model
+model = None
+
+def load_model():
+    global model
+    try:
+        # For testing purposes, we'll create a mock model
+        print("Development mode: Using mock model")
+        class MockModel:
+            def predict(self, X):
+                # Always return outpatient (0) for testing
+                return [0]
+        model = MockModel()
+        return True
+    except Exception as e:
+        print(f"Error loading model: {str(e)}")
+        return False
+
+# Load model when starting the server
+if not load_model():
+    print("Warning: Running in development mode without model")
+
+@app.route('/predict/file', methods=['POST'])
+def predict_from_file():
+    if 'file' not in request.files:
+        return jsonify({
+            'status': 'error',
+            'message': 'No file uploaded'
+        }), 400
+        
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({
+            'status': 'error',
+            'message': 'No file selected'
+        }), 400
+        
+    if not allowed_file(file.filename):
+        return jsonify({
+            'status': 'error',
+            'message': 'Invalid file type. Only PDF files are allowed.'
+        }), 400
+        
+    try:
+        # Save the uploaded file
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        
+        # Extract text from PDF
+        text = ""
+        with open(filepath, 'rb') as pdf_file:
+            pdf_reader = PyPDF2.PdfReader(pdf_file)
+            for page in pdf_reader.pages:
+                text += page.extract_text()
+        
+        # Extract values from text
+        extracted_data = extract_medical_values(text)
+        
+        # Check if all required fields were found
+        required_fields = ['HAEMATOCRIT', 'HAEMOGLOBINS', 'ERYTHROCYTE', 'LEUCOCYTE',
+                         'THROMBOCYTE', 'MCH', 'MCHC', 'MCV', 'AGE', 'SEX']
+        missing_fields = [field for field in required_fields if field not in extracted_data]
+        
+        if missing_fields:
+            return jsonify({
+                'status': 'error',
+                'message': f'Missing required fields in PDF: {", ".join(missing_fields)}'
+            }), 400
+        
+        # Create DataFrame for prediction
+        input_data = {
+            'HAEMATOCRIT': extracted_data['HAEMATOCRIT'],
+            'HAEMOGLOBINS': extracted_data['HAEMOGLOBINS'],
+            'ERYTHROCYTE': extracted_data['ERYTHROCYTE'],
+            'LEUCOCYTE': extracted_data['LEUCOCYTE'],
+            'THROMBOCYTE': extracted_data['THROMBOCYTE'],
+            'MCH': extracted_data['MCH'],
+            'MCHC': extracted_data['MCHC'],
+            'MCV': extracted_data['MCV'],
+            'AGE': extracted_data['AGE'],
+            'SEX_ENCODED': extracted_data['SEX']
+        }
+        
+        # Convert to DataFrame
+        input_df = pd.DataFrame([input_data])
+        
+        # Get abnormal values before prediction
+        abnormal_values = {}
+        severe_conditions = 0
+        for param, value in input_data.items():
+            if param in BLOOD_RANGES:
+                ranges = BLOOD_RANGES[param]
+                if value < ranges['low']['value'] or value > ranges['high']['value']:
+                    abnormal_values[param] = {'value': value}
+                    # Check for severe conditions
+                    if value < ranges['low']['value'] * 0.8 or value > ranges['high']['value'] * 1.2:
+                        severe_conditions += 1
+
+        # Check for disease patterns
+        detected_diseases = check_disease_patterns(input_data)
+        
+        # Make prediction, but override if severe conditions are present
+        model_prediction = model.predict(input_df)
+        
+        # Override prediction if severe conditions are present
+        final_prediction = 1 if (severe_conditions >= 2 or len(detected_diseases) >= 1) else model_prediction[0]
+        
+        # Generate medical report
+        medical_report = format_medical_report(
+            final_prediction,
+            input_data,
+            detected_diseases,
+            abnormal_values
+        )
+        
+        # Convert prediction to meaningful response
+        result = "Inpatient" if final_prediction == 1 else "Outpatient"
+        
+        # Clean up - remove uploaded file
+        os.remove(filepath)
+        
+        return jsonify({
+            'status': 'success',
+            'prediction': result,
+            'prediction_code': int(final_prediction),
+            'extracted_values': extracted_data,
+            'medical_report': medical_report,
+            'recommendations': format_recommendations(detected_diseases) if detected_diseases else None
+        })
+        
+    except Exception as e:
+        # Clean up in case of error
+        if os.path.exists(filepath):
+            os.remove(filepath)
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 400
+
+>>>>>>> parent of f2bda39 (fix: uses real model)
 def check_disease_patterns(values):
     """Check if values match known disease patterns"""
     detected_diseases = {}

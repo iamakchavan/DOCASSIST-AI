@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: docassist-backend
+    env: python
+    buildCommand: |
+      # Update package list and install system dependencies
+      apt-get update
+      apt-get install -y gfortran gcc g++ make python3-dev libblas-dev liblapack-dev
+      export LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LIBRARY_PATH
+      export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
+      # Upgrade pip and install build tools
+      python -m pip install --upgrade pip
+      pip install --no-cache-dir setuptools wheel
+      # Install numpy first
+      pip install --no-cache-dir numpy==1.21.6
+      # Install scipy with specific build flags
+      LDFLAGS="-shared" pip install --no-cache-dir scipy==1.7.3
+      # Install remaining requirements
+      pip install -r requirements.txt
+    startCommand: cd backend && gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.8.16
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHONUNBUFFERED
+        value: "true"
+      - key: NPY_NUM_BUILD_JOBS
+        value: "4" 

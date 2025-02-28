@@ -9,4 +9,5 @@ scipy==1.7.3
 joblib==1.2.0
 werkzeug==2.2.3
 python-dateutil==2.8.2
-gunicorn==20.1.0 
+gunicorn==20.1.0
+--only-binary=numpy,scipy,pandas,scikit-learn 

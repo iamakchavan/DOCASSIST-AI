@@ -128,7 +128,6 @@ For support, please open an issue in the GitHub repository or contact the mainta
 
 ## Authors
 
-- Ranjan Kumar - Initial work - [realranjan](https://github.com/realranjan)
+- Ranjan Vernekar - Initial work - [realranjan](https://github.com/realranjan)
 
 ---
-Made with ❤️ by the DocAssist AI Team 

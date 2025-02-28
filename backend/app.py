@@ -323,8 +323,6 @@ def extract_medical_values(text):
     
     return results
 
-<<<<<<< HEAD
-=======
 # Feature engineering function exactly as used in training
 def feature_engineering(df):
     df['THROMBOCYTE_LEUCOCYTE_RATIO'] = df['THROMBOCYTE'] / (df['LEUCOCYTE'] + 1e-6)
@@ -474,7 +472,6 @@ def predict_from_file():
             'message': str(e)
         }), 400
 
->>>>>>> parent of f2bda39 (fix: uses real model)
 def check_disease_patterns(values):
     """Check if values match known disease patterns"""
     detected_diseases = {}

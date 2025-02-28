@@ -2,7 +2,7 @@ services:
   - type: web
     name: docassist-backend
     env: python
-    runtime: python3.8.16
+    runtime: python3.8.0
     buildCommand: |
       # Update package list and install system dependencies
       apt-get update
@@ -10,12 +10,16 @@ services:
       apt-get install -y python3-scipy python3-numpy python3-pandas
       export LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LIBRARY_PATH
       export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
-      # Upgrade pip and install build tools
-      python -m pip install --upgrade pip setuptools wheel
+      # Upgrade pip first
+      python -m pip install --upgrade pip
+      # Install build tools
+      pip install --no-cache-dir setuptools wheel
       # Install numpy first
       pip install --no-cache-dir numpy==1.21.6
       # Install scipy using system libraries
       pip install --no-cache-dir scipy==1.7.3 --no-build-isolation
+      # Install pandas separately
+      pip install --no-cache-dir pandas==1.3.0
       # Install remaining requirements
       pip install -r requirements.txt
       # Ensure model directories exist
@@ -29,7 +33,7 @@ services:
     startCommand: cd backend && gunicorn app:app
     envVars:
       - key: PYTHON_VERSION
-        value: 3.8.16
+        value: 3.8.0
       - key: FLASK_ENV
         value: production
       - key: PYTHONUNBUFFERED

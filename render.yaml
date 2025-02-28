@@ -3,12 +3,12 @@ services:
     name: docassist-backend
     env: python
     buildCommand: |
-      apt-get update && apt-get install -y gfortran
-      pip install --upgrade pip
+      apt-get update && apt-get install -y gfortran build-essential python3-dev
+      pip install --upgrade pip setuptools wheel
       pip install -r requirements.txt
     startCommand: cd backend && gunicorn app:app
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.0
+        value: 3.8.17
       - key: FLASK_ENV
         value: production 

@@ -1,12 +1,12 @@
 flask==2.2.5
 flask-cors==4.0.0
-numpy==1.21.6
-pandas==1.5.3
+numpy==1.26.4
+pandas==2.2.0
 PyPDF2==3.0.1
 scikit-learn==1.5.1
 lightgbm==3.3.5
-scipy==1.7.3
-joblib==1.1.1
+scipy==1.12.0
+joblib==1.2.0
 werkzeug==2.2.3
 python-dateutil==2.8.2
 gunicorn==20.1.0 
